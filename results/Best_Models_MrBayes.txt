@@ -1,0 +1,116 @@
+Settings used
+
+alignment         : ./Conca_13G_AA_CluW_BlocksTodo_PartFind
+branchlengths     : unlinked
+models            : WAG, MTREV, DAYHOFF, VT, BLOSUM62, CPREV, RTREV, MTMAM, WAG+G, MTREV+G, DAYHOFF+G, VT+G, BLOSUM62+G, CPREV+G, RTREV+G, MTMAM+G, WAG+I, MTREV+I, DAYHOFF+I, VT+I, BLOSUM62+I, CPREV+I, RTREV+I, MTMAM+I, WAG+I+G, MTREV+I+G, DAYHOFF+I+G, VT+I+G, BLOSUM62+I+G, CPREV+I+G, RTREV+I+G, MTMAM+I+G
+model_selection   : aic
+search            : greedy
+
+
+Best partitioning scheme
+
+Scheme Name       : step_7
+Scheme lnL        : -46712.72021484375
+Scheme AIC        : 94009.4404297
+Number of params  : 292
+Number of sites   : 2223
+Number of subsets : 6
+
+Subset | Best Model | # sites    | subset id                        | Partition names
+1      | MTREV+I+G  | 505        | c19bd51c9979b5793a3960fc4d955733 | COX1
+2      | MTREV+I+G  | 190        | 1674f823a58be9bbe6919e641f960964 | COX2
+3      | MTREV+G    | 275        | d46a90b6f3d2cc31584b0763637977c9 | COX3
+4      | MTREV+I+G  | 331        | c3e12ceb013e82a6d4e065500d901c05 | CYTB
+5      | MTREV+I+G  | 846        | 60620b7da7a4d4131b4ee8063b032939 | ND4, ND1, ND3, ND5, ATP8, ATP6
+6      | MTREV+G    | 76         | ab100e9282e5458ba7d1a1c3cdb58501 | ND6, ND2, ND4L
+
+
+Scheme Description in PartitionFinder format
+Scheme_step_7 = (COX1) (COX2) (COX3) (CYTB) (ND4, ND1, ND3, ND5, ATP8, ATP6) (ND6, ND2, ND4L);
+
+Nexus formatted character sets
+begin sets;
+        charset Subset1 = 1-505;
+        charset Subset2 = 506-695;
+        charset Subset3 = 696-970;
+        charset Subset4 = 971-1301;
+        charset Subset5 = 1584-1790 1302-1507 1529-1583 1807-2047 2211-2223 2087-2210;
+        charset Subset6 = 2048-2086 1508-1528 1791-1806;
+        charpartition PartitionFinder = Group1:Subset1, Group2:Subset2, Group3:Subset3, Group4:Subset4, Group5:Subset5, Group6:Subset6;
+end;
+
+
+Nexus formatted character sets for IQtree
+Warning: the models written in the charpartition are just the best model found in this analysis. Not all models are available in IQtree, so you may need to set up specific model lists for your analysis
+
+#nexus
+begin sets;
+        charset Subset1 = 1-505;
+        charset Subset2 = 506-695;
+        charset Subset3 = 696-970;
+        charset Subset4 = 971-1301;
+        charset Subset5 = 1584-1790 1302-1507 1529-1583 1807-2047 2211-2223 2087-2210;
+        charset Subset6 = 2048-2086 1508-1528 1791-1806;
+        charpartition PartitionFinder = MTREV+I+G:Subset1, MTREV+I+G:Subset2, MTREV+G:Subset3, MTREV+I+G:Subset4, MTREV+I+G:Subset5, MTREV+G:Subset6;
+end;
+
+
+RaxML-style partition definitions
+Warning: RAxML allows for only a single model of rate heterogeneity in partitioned analyses. I.e. all partitions must be assigned one of three types of model: No heterogeneity (e.g. GTR); +G (e.g. GTR+G); or +I+G (e.g. GTR+I+G). If the best models for your datasetcontain different types of model for different subsets you will need to decide on the best rate heterogeneity model before you run RAxML. If you prefer to do things more rigorously, you can run separate PartitionFinder analyses for each type of rate heterogenetity Then choose the scheme with the lowest AIC/AICc/BIC score. Note that these re-runs will be quick!
+
+MTREV, Subset1 = 1-505
+MTREV, Subset2 = 506-695
+MTREV, Subset3 = 696-970
+MTREV, Subset4 = 971-1301
+MTREV, Subset5 = 1584-1790, 1302-1507, 1529-1583, 1807-2047, 2211-2223, 2087-2210
+MTREV, Subset6 = 2048-2086, 1508-1528, 1791-1806
+
+
+MrBayes block for partition definitions
+Warning: MrBayes only allows a relatively small collection of models. If any model in your analysis is not one that is included in MrBayes (e.g. by setting nst = 1, 2, or 6 for DNA sequences; or is not in the available list of protein models for MrBayes)then this MrBayes block will just set that model to nst = 6 for DNA, or 'wag' for Protein. Similarly, the only additional parameters that this MrBayes block will include are +I and +G. Other  parameters, such as +F and +X, are ignored. If you want to use this MrBayes block for your analysis, please make sure to check it carefully before you use it we've done our best to make it accurate, but there may be errors that remain!
+
+begin mrbayes;
+
+        charset Subset1 = 1-505;
+        charset Subset2 = 506-695;
+        charset Subset3 = 696-970;
+        charset Subset4 = 971-1301;
+        charset Subset5 = 1584-1790 1302-1507 1529-1583 1807-2047 2211-2223 2087-2210;
+        charset Subset6 = 2048-2086 1508-1528 1791-1806;
+
+        partition PartitionFinder = 6:Subset1, Subset2, Subset3, Subset4, Subset5, Subset6;
+        set partition=PartitionFinder;
+
+        lset applyto=(1) rates=invgamma;
+        prset applyto=(1) aamodelpr=fixed(mtrev);
+        lset applyto=(2) rates=invgamma;
+        prset applyto=(2) aamodelpr=fixed(mtrev);
+        lset applyto=(3) rates=gamma;
+        prset applyto=(3) aamodelpr=fixed(mtrev);
+        lset applyto=(4) rates=invgamma;
+        prset applyto=(4) aamodelpr=fixed(mtrev);
+        lset applyto=(5) rates=invgamma;
+        prset applyto=(5) aamodelpr=fixed(mtrev);
+        lset applyto=(6) rates=gamma;
+        prset applyto=(6) aamodelpr=fixed(mtrev);
+
+        prset applyto=(all) ratepr=variable;
+        unlink statefreq=(all) revmat=(all) shape=(all) pinvar=(all) tratio=(all);
+        unlink brlens=(all);
+
+end;
+
+
+
+*Citations for this analysis*
+-----------------------------
+If you use this analysis in your published work, please cite the following papers on which your analysis relied.
+
+For the version of PartitionFinder you used, please cite:
+Lanfear, R., Frandsen, P. B., Wright, A. M., Senfeld, T., Calcott, B. (2016) PartitionFinder 2: new methods for selecting partitioned models of evolution formolecular and morphological phylogenetic analyses. Molecular biology and evolution. DOI: dx.doi.org/10.1093/molbev/msw260
+
+For the greedy algorithm you used, please cite:
+Lanfear, R., Calcott, B., Ho, S. Y., & Guindon, S. (2012). PartitionFinder: combined selection of partitioning schemes and substitution models for phylogenetic analyses. Molecular biology and evolution, 29(6), 1695-1701.
+
+Your analysis also used PhyML, so please cite:
+Guindon, S., Dufayard, J. F., Lefort, V., Anisimova, M., Hordijk, W., & Gascuel, O. (2010). New algorithms and methods to estimate maximum-likelihood phylogenies: assessing the performance of PhyML 3.0. Systematic biology, 59(3), 307-321.
